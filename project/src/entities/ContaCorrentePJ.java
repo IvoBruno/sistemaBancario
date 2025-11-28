@@ -23,6 +23,6 @@ public class ContaCorrentePJ extends Conta{
 
    @Override
    public int hashCode() {
-      return Objects.hash(getCnpj(), getNumero());
+      return Objects.hash(getCnpj(), super.getNumero());
    }
 }
