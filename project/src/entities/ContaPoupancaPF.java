@@ -1,28 +1,29 @@
 package entities;
 
-import java.util.Objects;
+import java.math.BigDecimal;
 
-public class ContaPoupancaPF extends Conta{
-   private final String cpf;
+public non-sealed class ContaPoupancaPF extends Conta{
+   private BigDecimal taxaRendimento;
 
    public ContaPoupancaPF(Integer numero, String titular, String cpf) {
-      super(numero, titular);
-      this.cpf = cpf;
+      super(numero, cpf, titular);
+      this.taxaRendimento = BigDecimal.valueOf(0.01);
    }
 
-   public String getCpf() {
-      return cpf;
+   public BigDecimal getTaxaRendimento() {
+      return taxaRendimento;
+   }
+
+   public void setTaxaRendimento(BigDecimal taxaRendimento) {
+      this.taxaRendimento = taxaRendimento;
+   }
+
+   public void atualizaSaldo(){
+      super.depositar(getSaldo().multiply(taxaRendimento));
    }
 
    @Override
-   public boolean equals(Object o) {
-      if (o == null || getClass() != o.getClass()) return false;
-      ContaPoupancaPF that = (ContaPoupancaPF) o;
-      return Objects.equals(getCpf(), that.getCpf()) && Objects.equals(getNumero(), that.getNumero());
-   }
-
-   @Override
-   public int hashCode() {
-      return Objects.hash(getCpf(), super.getNumero());
+   public String toString() {
+      return super.toString() + "\nTaxa de rendimento: " + getTaxaRendimento().multiply(BigDecimal.valueOf(100)) + "%";
    }
 }

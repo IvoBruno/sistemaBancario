@@ -1,28 +1,57 @@
 package entities;
 
-import java.util.Objects;
+import java.math.BigDecimal;
 
-public class ContaCorrentePF extends Conta{
-   private final String cpf;
+public non-sealed class ContaCorrentePF extends Conta{
+   private BigDecimal chequeEspecial;
 
    public ContaCorrentePF(Integer numero, String titular, String cpf) {
-      super(numero, titular);
-      this.cpf = cpf;
+      super(numero, cpf, titular);
+      this.chequeEspecial = BigDecimal.ZERO;
    }
 
-   public String getCpf() {
-      return cpf;
+   public BigDecimal getChequeEspecial() {
+      return chequeEspecial;
    }
 
-   @Override
-   public boolean equals(Object o) {
-      if (o == null || getClass() != o.getClass()) return false;
-      ContaCorrentePF that = (ContaCorrentePF) o;
-      return Objects.equals(getCpf(), that.getCpf()) && Objects.equals(getNumero(), that.getNumero());
+   public void setChequeEspecial(BigDecimal chequeEspecial) {
+      this.chequeEspecial = chequeEspecial;
    }
 
    @Override
-   public int hashCode() {
-      return Objects.hash(getCpf(), super.getNumero());
+   public void sacar(BigDecimal valor){
+      if (valor.compareTo(getSaldo().add(chequeEspecial)) < 0){
+         super.sacar(valor);
+      }else{
+         throw new IllegalArgumentException("Saldo insuficiente");
+      }
+   }
+
+   @Override
+   public void depositar(BigDecimal valor){
+      if (chesEmUso()) {
+         BigDecimal taxa = (super.getSaldo().multiply(BigDecimal.valueOf(-0.2)));
+         super.depositar(valor);
+         super.sacar(taxa);
+      }else {
+         super.depositar(valor);
+      }
+   }
+
+   public boolean chesEmUso(){
+      return super.getSaldo().compareTo(BigDecimal.ZERO) < 0;
+   }
+
+   public BigDecimal chesDisponivel(){
+      if (super.getSaldo().compareTo(BigDecimal.ZERO) > -1){
+         return getChequeEspecial();
+      }else{
+         return getChequeEspecial().add(super.getSaldo());
+      }
+   }
+
+   @Override
+   public String toString() {
+      return super.toString() + "\nLimite chesque especial: " + getChequeEspecial() + " | Ches em uso?" + chesEmUso();
    }
 }
