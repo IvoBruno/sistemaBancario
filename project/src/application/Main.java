@@ -4,81 +4,65 @@ import entities.Conta;
 import entities.ContaCorrentePF;
 import entities.ContaPoupancaPF;
 
+import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+   static int geraNumeroConta = 1000;
    public static void main(String[] args) {
-      Scanner sc = new Scanner(System.in);
-      int geraNumeroConta = 1000;
       List<Conta> contas = new ArrayList<>();
-      int menu = 0;
+      Scanner sc = new Scanner(System.in);
+      int menu = -1;
       do{
          System.out.println("Selecto option:");
          System.out.println("1. Abrir conta corrente;");
-         System.out.println("1. Abrir conta poupança;");
-         System.out.println("2. Consultar conta;");
-         System.out.println("3. Encerrar conta;");
-         System.out.println("4. Sair;");
+         System.out.println("2. Abrir conta poupança;");
+         System.out.println("3. Consultar conta;");
+         System.out.println("4. Depositar;");
+         System.out.println("5. Sacar;");
+         System.out.println("6. Encerrar conta;");
+         System.out.println("0. Sair;");
+         int numConta = 0;
          switch (sc.nextInt()) {
             case 1:
-               try{
-                  System.out.println("Digite o nome do titular: ");
-                  String titular = sc.nextLine();
-                  System.out.println("Digite o cpf do titular: ");
-                  String cpf = sc.nextLine();
-                  System.out.println("Digite o valor do depósito inicial: ");
-                  BigDecimal valorInicial = BigDecimal.valueOf(sc.nextDouble());
-                  int numConta = ++geraNumeroConta;
-                  contas.add(new ContaPoupancaPF(numConta, cpf, titular));
-                  for(Conta conta : contas){
-                     if(conta.getNumero() == numConta){
-                        conta.depositar(valorInicial);
-                        break;
-                     }
-                  }
-               }catch (Exception e){
-                  System.out.println(e.getMessage());
-               }
+               contas.add(abrirConta("c"));
             break;
             case 2:
-               try{
-                  System.out.println("Digite o nome do titular: ");
-                  String titular = sc.nextLine();
-                  System.out.println("Digite o cpf do titular: ");
-                  String cpf = sc.nextLine();
-                  System.out.println("Digite o valor do depósito inicial: ");
-                  BigDecimal valorInicial = BigDecimal.valueOf(sc.nextDouble());
-                  int numConta = ++geraNumeroConta;
-                  contas.add(new ContaCorrentePF(numConta, cpf, titular));
-                  for(Conta conta : contas){
-                     if(conta.getNumero() == numConta){
-                        conta.depositar(valorInicial);
-                        break;
-                     }
-                  }
-               }catch (Exception e){
-                  System.out.println(e.getMessage());
-               }
+               contas.add(abrirConta("p"));
             break;
             case 3:
-               if(contas.isEmpty()) {
-                  System.out.println("Sem contas a consultar");
-                  break;
-               }
-                  System.out.println("Digite o numero da conta a consultar: ");
-               int numConta = sc.nextInt();
-               for(Conta conta : contas){
-                  if(conta.getNumero() == numConta){
-                     System.out.println(conta + "\n");
+               System.out.println("Digite o numero da conta: ");
+               numConta = sc.nextInt();
 
-                  }
-               }
             break;
+            case 4:
+               System.out.println("Digite a conta para realizar o depósito: ");
+               numConta = sc.nextInt();
+
+            case 0:
+               menu = 0;
+               break;
+            default:
+               System.out.println("Opção inválida.");
          }
       }while(menu != 0);
       sc.close();
+   }
+   public static Conta abrirConta(String tipo){
+      Scanner sc = new Scanner(System.in);
+      System.out.println("Digite o nome do titular: ");
+      String titular = sc.nextLine();
+      System.out.println("Digite o cpf do titular: ");
+      String cpf = sc.nextLine();
+      System.out.println("Digite o valor do depósito inicial: ");
+      BigDecimal valorInicial = sc.nextBigDecimal();
+      int numConta = ++geraNumeroConta;
+      sc.close();
+      if(tipo.equalsIgnoreCase("c"))return new ContaCorrentePF(numConta, titular, cpf, valorInicial);
+      if(tipo.equalsIgnoreCase("p"))return new ContaPoupancaPF(numConta, titular, cpf, valorInicial);
+      return null;
    }
 }

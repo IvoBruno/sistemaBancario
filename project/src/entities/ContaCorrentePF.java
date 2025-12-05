@@ -5,9 +5,14 @@ import java.math.BigDecimal;
 public non-sealed class ContaCorrentePF extends Conta{
    private BigDecimal chequeEspecial;
 
-   public ContaCorrentePF(Integer numero, String titular, String cpf) {
+   public ContaCorrentePF(Integer numero, String titular, String cpf, BigDecimal depositoInicial) {
       super(numero, cpf, titular);
-      this.chequeEspecial = BigDecimal.ZERO;
+      if(depositoInicial.compareTo(BigDecimal.valueOf(500))<=0){
+         this.chequeEspecial = BigDecimal.valueOf(50);
+      }else{
+         this.chequeEspecial = depositoInicial.multiply(BigDecimal.valueOf(0.5));
+      }
+      this.depositar(depositoInicial);
    }
 
    public BigDecimal getChequeEspecial() {

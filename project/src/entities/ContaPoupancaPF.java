@@ -5,9 +5,10 @@ import java.math.BigDecimal;
 public non-sealed class ContaPoupancaPF extends Conta{
    private BigDecimal taxaRendimento;
 
-   public ContaPoupancaPF(Integer numero, String titular, String cpf) {
+   public ContaPoupancaPF(Integer numero, String titular, String cpf, BigDecimal depositoInicial) {
       super(numero, cpf, titular);
       this.taxaRendimento = BigDecimal.valueOf(0.01);
+      depositar(depositoInicial);
    }
 
    public BigDecimal getTaxaRendimento() {
